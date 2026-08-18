@@ -234,7 +234,7 @@
     </div>
   </div>
 
-  <div class="archive-banner" id="archiveBanner">Viewing a past week — read only. Switch back to "This week" to make edits.</div>
+  <div class="archive-banner" id="archiveBanner">Viewing an archived week. Edits here update that week's saved record, not the current week.</div>
 
   <table>
     <thead>
@@ -541,12 +541,13 @@ async function switchToWeek(key){
   currentKey = key;
   const thisMonday = getWeekStart(new Date());
   const thisKey = keyFor(thisMonday);
-  isReadOnly = (key !== thisKey);
-  document.getElementById('archiveBanner').classList.toggle('show', isReadOnly);
+  const isArchivedWeek = (key !== thisKey);
+  isReadOnly = false; // editing is allowed on past weeks too, not just the current week
+  document.getElementById('archiveBanner').classList.toggle('show', isArchivedWeek);
 
   const dateStr = key.replace('week:','');
   const d = new Date(dateStr + 'T06:00:00');
-  document.getElementById('weekLabel').textContent = labelFor(d) + (isReadOnly ? ' — archived' : ' — current');
+  document.getElementById('weekLabel').textContent = labelFor(d) + (isArchivedWeek ? ' — archived' : ' — current');
 
   currentData = await loadWeek(d);
   render();
